@@ -1,0 +1,5 @@
+requests
+hjson
+py7zr
+brotli
+pysocks
