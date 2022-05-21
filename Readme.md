@@ -1,8 +1,8 @@
 <div align="center">
 
-![GitHub Repo size](https://img.shields.io/github/repo-size/xiaowine/pixiv?style=flat-square&color=3cb371)
-[![GitHub Star](https://img.shields.io/github/stars/xiaowine/pixiv?style=flat-square)](https://github.com/xiaowine/pixiv/stargazers)
-![Release Download](https://img.shields.io/github/downloads/xiaowine/pixiv/total?style=flat-square)
+![GitHub Repo size](https://img.shields.io/github/repo-size/Wine-Network/Pixiv_Spider?style=flat-square&color=3cb371)
+[![GitHub Star](https://img.shields.io/github/stars/Wine-Network/Pixiv_Spider?style=flat-square)](https://github.com/xiaowine/pixiv/stargazers)
+![Release Download](https://img.shields.io/github/downloads/Wine-Network/Pixiv_Spider/total?style=flat-square)
 
 
 </div>
