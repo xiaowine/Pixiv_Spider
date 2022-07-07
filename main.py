@@ -245,12 +245,14 @@ if __name__ == '__main__':
     pixiv = Pixiv()
     pixiv.argparse()
     pixiv.show_parameter()
-    url = f'https://api.telegram.org/bot{pixiv.bot_token}/sendMessage?chat_id&=5383069724:AAF82SeobIqMrc_oQkLs9uf1MBWVqWBSTEs&text=开始爬取{pixiv.spider_type}'
-    pixiv.get(urls=url)
+    if pixiv.send:
+        url = f'https://api.telegram.org/bot{pixiv.bot_token}/sendMessage?chat_id&=5383069724:AAF82SeobIqMrc_oQkLs9uf1MBWVqWBSTEs&text=开始爬取{pixiv.spider_type}'
+        pixiv.get(urls=url)
     # http_get(url, proxies={"https": "socks5://127.0.0.1:10808"})
     pixiv.main()
-    url = f'https://api.telegram.org/bot{pixiv.bot_token}/sendMessage?chat_id&=5383069724:AAF82SeobIqMrc_oQkLs9uf1MBWVqWBSTEs&text=爬取结束'
-    pixiv.get(urls=url)
+    if pixiv.send:
+        url = f'https://api.telegram.org/bot{pixiv.bot_token}/sendMessage?chat_id&=5383069724:AAF82SeobIqMrc_oQkLs9uf1MBWVqWBSTEs&text=爬取结束'
+        pixiv.get(urls=url)
     # http_get(url, proxies={"https": "socks5://127.0.0.1:10808"})
     pixiv.log.info(f"爬取结束,用时：{time() - start_time}s")
 # -t daily --proxy={\"https\":\"socks5://192.168.1.3:20170\"} -d true
