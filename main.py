@@ -8,7 +8,7 @@ from signal import SIGINT, SIGTERM, signal
 from time import time
 from typing import Type
 
-from hjson import HjsonDecodeError, loads
+from json import JSONDecodeError, loads
 from py7zr import SevenZipFile
 from requests import Response, get as http_get, post as http_post
 from requests.exceptions import ConnectionError, SSLError
@@ -85,8 +85,8 @@ class Pixiv:
         parser.add_argument("-b", "--bottoken", help=bot_token_help, type=str, nargs='?', const=bot_token_default, default=bot_token_default)
         args = parser.parse_args()
         try:
-            self.http_proxy = loads(args.proxy.__str__())
-        except HjsonDecodeError:
+            self.http_proxy = loads(args.proxy)
+        except JSONDecodeError:
             self.log.warn("代理参数错误")
             break_program()
         self.is_zip = args.compress
@@ -132,7 +132,7 @@ class Pixiv:
         self.log.info("实体化排行榜")
         try:
             self.response_handle = loads(response.text)
-        except HjsonDecodeError as e:
+        except JSONDecodeError as e:
             self.log.info(f"实体化排行榜异常：{e.msg}/t response：{response.text}")
             break_program()
 
@@ -140,13 +140,13 @@ class Pixiv:
             self.log.info("-" * 40)
             self.log.info("-" * 40)
             # self.log.info(i['url'])
-            self.log.info(f"开始处理排行榜 第 {40-index} 名")
+            self.log.info(f"开始处理排行榜 第 {40 - index} 名")
             image_url_re_dicts = findall("https://i.pximg.net/c/240x480/img-master/img/(.*)_p.*_master1200.jpg",
                                          i['url'])
             self.log.info(f"共 {i['illust_page_count']} 张图")
             for ii in range(int(i['illust_page_count'])):
                 self.log.info("-" * 20)
-                self.log.info(f"处理 第 {40-index} 名 第 {ii + 1} 张图")
+                self.log.info(f"处理 第 {40 - index} 名 第 {ii + 1} 张图")
                 image_url_re = image_url_re_dicts[0]
                 image_name = f'[{i["user_name"]}] {i["title"]}_p{ii}' \
                     .replace("<", "") \
@@ -179,17 +179,18 @@ class Pixiv:
             with SevenZipFile(f"zips{sep}Compressed.7z", 'w') as archive:
                 archive.writeall(self.now_path)
 
-    def get(self, url):
-        try:
-            return http_get(url, proxies=self.http_proxy, headers=self.header)
-        except SSLError:
-            self.log.info("get请求错误")
-            return ResultData
-            pass
-        except ConnectionError:
-            self.log.info("get连接失败")
-            return ResultData
-            pass
+    def get(self, urls):
+        # try:
+        return http_get(urls, proxies=self.http_proxy, headers=self.header)
+
+    # except SSLError:
+    #     self.log.info("get请求错误")
+    #     return ResultData
+    #     pass
+    # except ConnectionError:
+    #     self.log.info("get连接失败")
+    #     return ResultData
+    #     pass
 
     def post(self, url, data, files) -> Response | Type[ResultData]:
         try:
@@ -237,11 +238,20 @@ def is_exist_dirs(dir_path) -> None:
 
 
 if __name__ == '__main__':
+
     start_time = time()
     signal(SIGINT, break_program)
     signal(SIGTERM, break_program)
     pixiv = Pixiv()
     pixiv.argparse()
     pixiv.show_parameter()
+    url = f'https://api.telegram.org/bot{pixiv.bot_token}/sendMessage?chat_id&=5383069724:AAF82SeobIqMrc_oQkLs9uf1MBWVqWBSTEs&text=开始爬取{pixiv.spider_type}'
+    pixiv.get(urls=url)
+    # http_get(url, proxies={"https": "socks5://127.0.0.1:10808"})
     pixiv.main()
+    url = f'https://api.telegram.org/bot{pixiv.bot_token}/sendMessage?chat_id&=5383069724:AAF82SeobIqMrc_oQkLs9uf1MBWVqWBSTEs&text=爬取结束'
+    pixiv.get(urls=url)
+    # http_get(url, proxies={"https": "socks5://127.0.0.1:10808"})
     pixiv.log.info(f"爬取结束,用时：{time() - start_time}s")
+# -t daily --proxy={\"https\":\"socks5://192.168.1.3:20170\"} -d true
+#
